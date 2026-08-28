@@ -3,12 +3,14 @@ import { listQuotes } from "@/lib/quotes";
 import { QuotesTable } from "@/components/quotes-table";
 import { AppHeader } from "@/components/app-header";
 import { PlusIcon } from "@/components/icons";
+import { requireSession } from "@/lib/auth-server";
 
 function formatMoney(n: number) {
   return n.toLocaleString("es-MX", { style: "currency", currency: "USD" });
 }
 
 export default async function PanelPage() {
+  await requireSession();
   const quotes = await listQuotes();
 
   const totalFacturado = quotes

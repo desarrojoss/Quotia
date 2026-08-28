@@ -1,5 +1,6 @@
 import { renderToBuffer } from "@react-pdf/renderer";
 import { NextResponse } from "next/server";
+import { requireSession } from "@/lib/auth-server";
 import { getQuoteById } from "@/lib/quotes";
 import { QuotePdf } from "@/lib/quote-pdf";
 
@@ -7,6 +8,8 @@ export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  await requireSession();
+
   const { id } = await params;
   const quote = await getQuoteById(id);
 

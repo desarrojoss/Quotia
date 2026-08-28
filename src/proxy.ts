@@ -1,25 +1,20 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { auth } from "@/lib/firebase-admin";
 
-// Proxy siempre corre en runtime Node.js (a diferencia del middleware clásico en Edge),
-// así que firebase-admin funciona aquí sin trucos.
+// Edge-safe a propósito: solo revisa que exista la cookie (sin verificar la
+// firma) para redirigir rápido a la mayoría de tráfico no autenticado.
+// firebase-admin necesita APIs de Node que no existen en Edge, así que la
+// verificación criptográfica real vive en requireSession() (lib/auth-server.ts),
+// llamada desde cada página/action/route handler protegidos.
 export const config = {
   matcher: [
     "/((?!login|api/auth/session|api/webhooks/stripe|_next/static|_next/image|favicon.ico).*)",
   ],
 };
 
-export async function proxy(req: NextRequest) {
-  const cookie = req.cookies.get("session")?.value;
-  if (!cookie) {
+export function proxy(req: NextRequest) {
+  if (!req.cookies.has("session")) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
-
-  try {
-    await auth.verifySessionCookie(cookie, true);
-    return NextResponse.next();
-  } catch {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
+  return NextResponse.next();
 }

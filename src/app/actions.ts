@@ -1,5 +1,6 @@
 "use server";
 
+import { requireSession } from "@/lib/auth-server";
 import { db } from "@/lib/firebase-admin";
 import { getQuoteById } from "@/lib/quotes";
 import { getStripe } from "@/lib/stripe";
@@ -23,6 +24,8 @@ export interface CreateQuoteResult {
 export async function createQuote(
   input: CreateQuoteInput
 ): Promise<CreateQuoteResult> {
+  await requireSession();
+
   const items = input.items.filter((i) => i.descripcion.trim() !== "");
 
   if (!input.nombre.trim() || !input.correo.trim() || items.length === 0) {
@@ -71,6 +74,8 @@ export async function createPaymentLink(
   quoteId: string,
   origin: string
 ): Promise<CreatePaymentLinkResult> {
+  await requireSession();
+
   const quote = await getQuoteById(quoteId);
   if (!quote) {
     return { ok: false, error: "Cotización no encontrada." };
