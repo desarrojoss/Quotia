@@ -1,26 +1,83 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg: #08090c;
+  --color-surface: #0e0f13;
+  --color-border: #1f2128;
+  --color-border-strong: #2c2f3a;
+  --color-ink: #f4f4f6;
+  --color-ink-muted: #9498a3;
+  --color-ink-faint: #5c606c;
+  --color-accent: #22d3ee;
+  --color-accent-strong: #67e8f9;
+  --color-accent-ink: #032830;
+  --color-success: #34d399;
+  --color-danger: #f87171;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--color-border);
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  color: var(--color-ink);
+}
+
+/* scrollbar, cosmetic only */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 999px;
+  border: 2px solid var(--color-bg);
+}
+
+@layer components {
+  /* .btn es la base; combinar en el JSX con una variante, ej. className="btn btn-primary" */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-150 disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-cyan-400 text-[#032830] shadow-[0_1px_0_0_rgba(255,255,255,0.15)_inset] hover:bg-cyan-300 hover:shadow-[0_0_24px_-4px_rgba(34,211,238,0.6)] active:bg-cyan-500;
+  }
+  .btn-ghost {
+    @apply border border-(--color-border-strong) bg-white/2 text-zinc-200 hover:border-cyan-400/60 hover:bg-cyan-400/6 hover:text-cyan-300;
+  }
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+  .btn-icon {
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-lg border border-(--color-border-strong) bg-white/2 text-zinc-400 transition-all duration-150 hover:border-cyan-400/60 hover:text-cyan-300 disabled:pointer-events-none disabled:opacity-50;
+  }
+  .field-label {
+    @apply mb-1.5 block text-xs font-medium text-zinc-400;
+  }
+  .input-field {
+    @apply w-full rounded-lg border border-(--color-border-strong) bg-white/3 px-3.5 py-2.5 text-sm text-zinc-100 outline-none transition-colors duration-150 placeholder:text-zinc-600 focus:border-cyan-400/70 focus:bg-white/5;
+  }
+  .card {
+    @apply rounded-2xl border border-(--color-border) bg-(--color-surface);
+  }
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium;
+  }
 }
