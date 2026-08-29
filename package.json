@@ -16,6 +16,9 @@
     "react-dom": "19.2.8",
     "stripe": "^22.6.0"
   },
+  "overrides": {
+    "jose": "4.15.9"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
