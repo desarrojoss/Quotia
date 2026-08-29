@@ -25,9 +25,7 @@ export async function POST(req: Request) {
     return res;
   } catch (err) {
     console.error("createSessionCookie failed", err);
-    // TODO(temporal): quitar el detalle del error una vez estabilizado el login en prod.
-    const detail = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: "Login inválido.", detail }, { status: 401 });
+    return NextResponse.json({ error: "Login inválido." }, { status: 401 });
   }
 }
 
