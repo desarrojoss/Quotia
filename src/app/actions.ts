@@ -1,7 +1,7 @@
 "use server";
 
 import { requireSession } from "@/lib/auth-server";
-import { db } from "@/lib/firebase-admin";
+import { getDb } from "@/lib/firebase-admin";
 import { getQuoteById } from "@/lib/quotes";
 import { getStripe } from "@/lib/stripe";
 import type { Quote, QuoteItem } from "@/lib/types";
@@ -56,7 +56,7 @@ export async function createQuote(
   };
 
   try {
-    const ref = await db.collection("quotes").add(quote);
+    const ref = await getDb().collection("quotes").add(quote);
     return { ok: true, id: ref.id };
   } catch (err) {
     console.error("createQuote failed", err);
@@ -110,7 +110,7 @@ export async function createPaymentLink(
       return { ok: false, error: "Stripe no devolvió una URL de pago." };
     }
 
-    await db.collection("quotes").doc(quote.id).update({
+    await getDb().collection("quotes").doc(quote.id).update({
       stripeCheckoutUrl: session.url,
       estado: "enviada",
     });

@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/firebase-admin";
+import { getAuthAdmin } from "@/lib/firebase-admin";
 
 export async function requireSession() {
   const cookieStore = await cookies();
@@ -8,7 +8,7 @@ export async function requireSession() {
   if (!session) redirect("/login");
 
   try {
-    return await auth.verifySessionCookie(session, true);
+    return await getAuthAdmin().verifySessionCookie(session, true);
   } catch {
     redirect("/login");
   }

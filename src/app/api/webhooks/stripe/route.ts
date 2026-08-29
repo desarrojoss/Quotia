@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
-import { db } from "@/lib/firebase-admin";
+import { getDb } from "@/lib/firebase-admin";
 import { getStripe } from "@/lib/stripe";
 
 export async function POST(req: Request) {
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     const session = event.data.object as Stripe.Checkout.Session;
     const quoteId = session.metadata?.quoteId;
     if (quoteId) {
-      await db.collection("quotes").doc(quoteId).update({ estado: "pagada" });
+      await getDb().collection("quotes").doc(quoteId).update({ estado: "pagada" });
     }
   }
 

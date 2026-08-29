@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/firebase-admin";
+import { getAuthAdmin } from "@/lib/firebase-admin";
 
 const SESSION_COOKIE = "session";
 const EXPIRES_IN_MS = 14 * 24 * 60 * 60 * 1000; // 14 días
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const sessionCookie = await auth.createSessionCookie(idToken, {
+    const sessionCookie = await getAuthAdmin().createSessionCookie(idToken, {
       expiresIn: EXPIRES_IN_MS,
     });
     const res = NextResponse.json({ ok: true });
@@ -25,7 +25,9 @@ export async function POST(req: Request) {
     return res;
   } catch (err) {
     console.error("createSessionCookie failed", err);
-    return NextResponse.json({ error: "Login inválido." }, { status: 401 });
+    // TODO(temporal): quitar el detalle del error una vez estabilizado el login en prod.
+    const detail = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: "Login inválido.", detail }, { status: 401 });
   }
 }
 
